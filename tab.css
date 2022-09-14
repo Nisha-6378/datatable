@@ -1,0 +1,52 @@
+.table1{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+ 
+}
+table{
+    text-align: center;
+   border-collapse: collapse;
+ 
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+td,th{
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+}
+tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+  .current{
+    color: green;
+    
+  }
+  #pagin li {
+    display: inline-block;
+    height: 20px;
+    width:20px;
+    color: white;
+    background-color:pink;
+    padding: 10px;
+    text-align: center;
+    margin: 10px;
+
+}
+
+#search{
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color:black;
+    height: 25px;
+    border: 3px solid green;
+}
+#perpage{
+    float: right;
+    height: 30px;
+   
+    border: 3px solid green;
+    margin: 10px;
+}
