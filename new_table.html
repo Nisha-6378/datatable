@@ -2,23 +2,31 @@
 <html>
    <head>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-      <link rel="stylesheet" href="new_API.css">
+      <link rel="stylesheet" href="tab.css">
    </head>   
    
    <body>
    
       <input type="text" id="search" placeholder="search.." />
+       <select id="perpage" >
+         <option>select option</option>
+         <option value="10"id="1" class="1">10</option>
+         <option value="20" id="2" class="2">20</option>
+         <option value="5" id="3">5</option>
+         <option value="4" id="4">4</option>
+         <option value="30" id="3" class="3">30</option>
+      </select>
       <!-- <button type="button" id="sort" >Sort</button><br><br> -->
       <div id="page"></div>
       <div id="s"></div>
       <table  id="tab" class="paginated">
          <thead id="h">
             <tr>
-               <th>Id</th>
-                <th id="f">FirstName</th>
-               <th>LastName</th>
-               <th>DOB</th>
-               <th>Email</th>
+               <th id="id">Id</th>
+                <th id="f_name">FirstName</th>
+               <th id="l_name">LastName</th>
+               <th id="dob">DOB</th>
+               <th id="em">Email</th>
               <th>Image</th>
             </tr>
          </thead>   
@@ -27,20 +35,67 @@
       </table>
       <div class="pagination">
          
-         <span class="page" ><input type="hidden" value="10">1</span>
+         <!-- <span class="page" ><input type="hidden" value="10">1</span>
          <span class="page" ><input type="hidden" value="20">2</span>
          <span class="page" ><input type="hidden" value="30">3</span>
          <span class="page" ><input type="hidden" value="40">4</span>
+         <span class="page" ><input type="hidden" value="10">5</span>
+         <span class="page" ><input type="hidden" value="20">6</span>
+         <span class="page" ><input type="hidden" value="30">7</span>
+         <span class="page" ><input type="hidden" value="40">8</span>
+         <span class="page" ><input type="hidden" value="10">9</span>
+         <span class="page" ><input type="hidden" value="20">10</span>
+         <span class="page" ><input type="hidden" value="30">11</span>
+         <span class="page" ><input type="hidden" value="40">12</span>
+         <span class="page" ><input type="hidden" value="10">13</span>
+         <span class="page" ><input type="hidden" value="20">14</span>
+         <span class="page" ><input type="hidden" value="30">15</span> -->
+         <!-- <ul class="prev" onclick="prev()">prev</ul> -->
+         <ul id="pagin"></ul>
+         <!-- <ul class="next" onclick="next()">next</ul>
+          -->
       </div>
       <script>
-        
-        var new_data = [];
-           $(document).ready(function(){
 
+            var original_data;
+            var temp_data;
+            var pagination_data;
+            var prpg;
+        $(document).ready(function(){
+            $.ajax({
+                  url:"https://hub.dummyapis.com/employee?noofRecords=150&idStarts=1",
+                  type:"GET",
+                                    
+                  success: function(response)
+                  {
+                     original_data = response;
+                     pagination_data=response;
+                     prpg=response;
+                     console.log(original_data);
+                     temp_data = response.slice();
+                    create_table(response);
+                                                                          
+                  }
+
+               }); 
+               
                function create_table(data){
-
-               }
-              
+                  console.log("original data", original_data);
+                     console.log("temp_data data", temp_data);
+                     var student = '';
+                     $.each(data, function (key, value) {
+                       
+                        student = `<tr><td>${value.id}</td>
+                            <td>${ value.firstName}</td>
+                            <td>${ value.lastName}</td>
+                            <td>${ value.dob}</td><td>${value.email}</td><td>
+                              <img src=" ${value.imageUrl}"></td></tr>`;
+                        
+                             $('#tab').append(student);
+                     });
+                     pagination(original_data);
+                   
+               }  
                $("#search").on("keyup", function() {
                    var value = $(this).val().toLowerCase();
                    $("#tab tr").filter(function() {
@@ -48,55 +103,134 @@
                     });
                });
               
-                $.ajax({
-                    url:"https://hub.dummyapis.com/employee?noofRecords=150&idStarts=1",
-                    type:"GET",
-                                      
-                     success: function(response)
+                
+               $("#f_name").on("click", function(){
+                  $('#tab tbody').empty();
+                  var data=temp_data.sort(function(a,b){
+                     if(a.firstName<b.firstName)
                      {
-                        //console.log(response);
-                        var sorted=response.sort(function(a,b){
-
-                         if(a.firstName<b.firstName)
-                         {
-                             return-1;
-                          }
-                          else if(a.firstName>b.firstName)
-                          {
-                              return 1;
-                          }
-                          else{
-                              return 0;
-                           }
-                                                   
-                        });
-                      
-                        // data = response;
-                        var student = '';
-                        $.each(response, function (key, value) {
-        
-                           student += '<tr>';
-                           student += '<td>' +
-                             value.id+ '</td>';
-                           student += '<td>' +
-                              value.firstName+ '</td>';
-                           student += '<td>' +
-                              value.lastName + '</td>';
-                           student += '<td>' +
-                             value.dob+ '</td>';
-                           student +='<td>' +
-                             value.email + '</td>';
-                           student +='<td>' +
-                              value.imageUrl + '</td>';        
-                           student += '</tr>';
-                        });
-                     
-                        $('#tab').append(student);
-
+                        return-1;
                      }
+                     else if(a.firstName>b.firstName)
+                     {
+                        return 1;
+                     } 
+                     else{
+                        return 0;
+                     }
+                  });
+                           
+                  create_table(data);
+               })
+               $('#l_name').on("click",function(){
+                 $('#tab tbody').empty();
+                     var data=temp_data.sort(function(a,b){
+                        if(a.lastName<b.lastName)
+                        {
+                           return -1;
+                        }
+                        else if(a.lastName>b.lastName)
+                        {
+                           return 1;
+                        }
+                        else{
+                           return 0;
+                        }
+                     });
+                     create_table(data);
+               })
+               $('#dob').on("click",function(){
+                  $('#tab tbody').empty();
+                  var data=temp_data.sort(function(a,b){
+                     if(a.dob<b.dob)
+                     {
+                        return -1;
+                     }
+                     else if(a.dob>b.dob)
+                     {
+                        return 1;
+                     }
+                     else
+                     {
+                        return 0;
+                     }
+                  });
+                  create_table(data);
+               })
+               $('#id').on("click",function(){
+                 console.log("here", original_data);
+                 $('#tab tbody').empty();
+                 create_table(original_data);
+               })
 
-                  }); 
-            });     
+               function pagination(m)
+               {
+                  $('#perpage').on ("change",function(){
+                    var value=$(this).val();  
+                    var pageCount =  m.length / value;
+                    $("#pagin").html("");
+                    for(var i = 0 ; i<pageCount;i++){
+                        $("#pagin").append('<li><a href="#">'+(i+1)+'</a></li> ');
+                    
+                     }
+                     printpage(value);
+                  });  
+              } 
+              function printpage(value1)
+              {
+                 $("#pagin li").first().find("a").addClass("current") 
+                 function  showPage(page) {
+                     $("#tab tbody tr").hide();
+                     $("#tab tbody tr").each(function(n) {
+                       if (n >= value1 * (page - 1) && n < value1 * page)
+                          $(this).show();
+                     });        
+                  }
+                  showPage(1);
+                  $("#pagin li a").click(function() {
+                    $("#pagin li a").removeClass("current");
+                    $(this).addClass("current");
+                    showPage(parseInt($(this).text()))
+                   });
+
+               } 
+
+               //function pagination(m) {  
+                  // $('#perpage').on ("change",function(){
+                  //   var value=$(this).val();
+                  //   var pageCount =  m.length / value;
+                  //   $("#pagin").html("");
+                  //  for(var i = 0 ; i<pageCount;i++){
+                  //       $("#pagin").append('<li><a href="#">'+(i+1)+'</a></li> ');
+
+                  //    }
+                  //    $("#pagin li").first().find("a").addClass("current")
+                  //    showPage = function(page) {
+                  //     $("#tab tbody tr").hide();
+                  //      $("#tab tbody tr").each(function(n) {
+                  //          if (n >= value * (page - 1) && n < value * page)
+                  //            $(this).show();
+                  //       });        
+                  //    }
+                  //   showPage(1);
+                  //    $("#pagin li a").click(function() {
+                  //     $("#pagin li a").removeClass("current");
+                  //     $(this).addClass("current");
+                  //      showPage(parseInt($(this).text())) 
+                      
+                  //    });
+                   
+                     
+                  // });            
+                                 
+                
+              // }
+              
+
+            
+            });   
+         
+           
       </script>
   
    </body>
